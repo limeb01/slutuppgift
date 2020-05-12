@@ -30,6 +30,8 @@ public class Main extends Application {
 
     ArrayList <Text> crossArray = new ArrayList<>();
 
+    ArrayList <Integer> whatPlayerArray = new ArrayList<>();
+
     GridPane grid = new GridPane();
 
     public static void main(String[] args) {
@@ -53,6 +55,7 @@ public class Main extends Application {
         Button startGameButton = new Button("Start Game");
         startGameButton.setOnAction(event -> {
             primaryStage.setScene(gameScene());
+
         });
         Button exitGameButton = new Button("Exit Game");
 
@@ -68,8 +71,10 @@ public class Main extends Application {
 
 
 
+
     }
     public Scene gameScene(){
+
         grid = new GridPane();
         grid.setMinSize(500,500);
         Scene gameScene = new Scene(grid);
@@ -88,15 +93,21 @@ public class Main extends Application {
             final int arrayIndex = i;
 
             gridRectangle.setOnMousePressed(event -> {
+                System.out.println(arrayIndex);
 
-                System.out.println("еееееееееееееееееее");
-                if (isPlayer1Playing){
-                    circleArray.get(arrayIndex).setVisible(true);
-                    isPlayer1Playing = false;
-                }else {
-                    crossArray.get(arrayIndex).setVisible(true);
-                    isPlayer1Playing = true;
+                if (circleArray.get(arrayIndex).isVisible() == false && crossArray.get(arrayIndex).isVisible()==false){
+                    if (isPlayer1Playing){
+                        circleArray.get(arrayIndex).setVisible(true);
+                        isPlayer1Playing = false;
+
+                    }else {
+                        crossArray.get(arrayIndex).setVisible(true);
+                        isPlayer1Playing = true;
+
+                    }
+
                 }
+            checkIfThreeInARow();
 
 
 
@@ -138,26 +149,93 @@ public class Main extends Application {
         return gameScene;
 
         }
+        public void checkIfThreeInARow(){
+        Boolean crossThreeInARow = false;
+        Boolean circleThreeInARow = false;
+        int countCross = 0;
+        int countCircle = 0;
+
+
+        // kollar de om nЕgon rad Дr 3 i rad
+                for (int j = 0; j < 9; j++) {
+                    if (j%3==0){
+                        countCircle=0;
+                        countCross = 0;
+                    }
+
+                    if (crossArray.get(j).isVisible() ){
+
+                        countCross++;
+
+                    }
+
+                    if (circleArray.get(j).isVisible() ){
+
+                        countCircle++;
+
+                    }
+
+                if (countCircle == 3){
+                    circleThreeInARow = true;
+                }
+                if (countCross == 3){
+                    crossThreeInARow = true;
+                }
+
+
+            }
+                countCircle = 0;
+                countCross = 0;
+                int count =0;
+                // kollar om det Дr 3 i rad i kolumnerna
+            for (int i = 0; i <3 ; i++) {
+                for (int j = 0+i; j <9 ; j++) {
+                    System.out.println(j+ " hej");
+                    count++;
+
+
+                    if (circleArray.get(j).isVisible()){
+                        countCircle++;
+                    }
+                    if (crossArray.get(j).isVisible()){
+                        countCross++;
+                    }
+
+                    j=j+2;
+                    if (count ==3){
+                        break;
+                    }
+                }
+                if (countCircle == 3){
+                    circleThreeInARow = true;
+                }
+                if (countCross == 3){
+                    crossThreeInARow = true;
+                }
+                countCircle = 0;
+                countCross = 0;
+            }
 
 
 
-    public void drawCross(){
-        Circle test = new Circle();
 
 
 
-    }
-    public void drawCircle(){
+        if (crossThreeInARow==true){
+            System.out.println("CROSS WIN");
 
-    }
-    public void game(){
-        while (true){
+        }
+        if (circleThreeInARow == true){
+            System.out.println("CIRCLE WIN");
+        }
+
+
 
 
 
         }
 
-    }
+
 
 
 }
