@@ -3,24 +3,21 @@ import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.shape.*;
-import javafx.scene.Scene.*;
 import javafx.scene.text.Text;
 
-
-
-import java.awt.*;
 import java.util.ArrayList;
 
+
 public class Main extends Application {
+
+    VBox gameWon;
 
     Boolean isPlayer1Playing = true;
 
@@ -30,9 +27,11 @@ public class Main extends Application {
 
     ArrayList <Text> crossArray = new ArrayList<>();
 
-    ArrayList <Integer> whatPlayerArray = new ArrayList<>();
-
     GridPane grid = new GridPane();
+
+    Text winnerText = new Text();
+
+    Stage mainStage;
 
     public static void main(String[] args) {
         launch(args);
@@ -42,7 +41,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
+        mainStage = primaryStage;
         VBox menu = new VBox();
         menu.setPrefWidth(500);
         menu.setPrefHeight(500);
@@ -54,19 +53,19 @@ public class Main extends Application {
 
         Button startGameButton = new Button("Start Game");
         startGameButton.setOnAction(event -> {
-            primaryStage.setScene(gameScene());
+            mainStage.setScene(gameScene());
 
         });
         Button exitGameButton = new Button("Exit Game");
 
 
 
-       startGameButton.setPrefSize(300,100);
-       menu.getChildren().addAll(startGameButton,exitGameButton);
+        startGameButton.setPrefSize(300,100);
+        menu.getChildren().addAll(startGameButton,exitGameButton);
 
 
-        primaryStage.setScene(menuScene);
-        primaryStage.show();
+        mainStage.setScene(menuScene);
+        mainStage.show();
 
 
 
@@ -74,10 +73,15 @@ public class Main extends Application {
 
     }
     public Scene gameScene(){
+        StackPane stackPane = new StackPane();
 
         grid = new GridPane();
         grid.setMinSize(500,500);
-        Scene gameScene = new Scene(grid);
+
+
+
+        stackPane.getChildren().addAll(grid,gameWon());
+        Scene gameScene = new Scene(stackPane);
         int x=0;
 
 
@@ -152,25 +156,28 @@ public class Main extends Application {
         public void checkIfThreeInARow(){
         Boolean crossThreeInARow = false;
         Boolean circleThreeInARow = false;
+        Boolean draw = false;
         int countCross = 0;
         int countCircle = 0;
+        int countIfGridFul = 0;
 
 
         // kollar de om någon rad är 3 i rad
                 for (int j = 0; j < 9; j++) {
+
                     if (j%3==0){
                         countCircle=0;
                         countCross = 0;
                     }
 
                     if (crossArray.get(j).isVisible() ){
-
+                        countIfGridFul++;
                         countCross++;
 
                     }
 
                     if (circleArray.get(j).isVisible() ){
-
+                        countIfGridFul++;
                         countCircle++;
 
                     }
@@ -182,6 +189,9 @@ public class Main extends Application {
                     crossThreeInARow = true;
                 }
 
+                if (countIfGridFul==9){
+                    draw = true;
+                }
 
             }
                 countCircle = 0;
@@ -223,22 +233,60 @@ public class Main extends Application {
 
         if (crossThreeInARow==true){
             System.out.println("CROSS WIN");
+            winnerText.setText("CROSS WIN");
+            gameWon.setVisible(true);
+
 
         }
         if (circleThreeInARow == true){
             System.out.println("CIRCLE WIN");
+            winnerText.setText("CIRCLE WIN");
+            gameWon.setVisible(true);
+
+        }
+        if (draw==true && circleThreeInARow == false && crossThreeInARow == false){
+
+            winnerText.setText("DRAW");
+            gameWon.setVisible(true);
         }
 
 
 
 
 
+        }
+        public VBox gameWon(){
+         gameWon = new VBox();
+         gameWon.setStyle("-fx-background-color: transparent");
+         gameWon.setVisible(false);
+        gameWon.setMaxSize(300,300);
+        gameWon.setAlignment(Pos.CENTER);
+        gameWon.setSpacing(50);
+       Text gameOverText = new Text("GAME OVER");
+            winnerText = new Text("dfsfsfdff");
+            winnerText.setFill(Color.GREEN);
+            winnerText.setStyle("-fx-font-size:70");
+       gameOverText.setFill(Color.GREEN);
+       gameOverText.setStyle("-fx-font-size:80" );
+
+        Button playAgain = new Button("Play Again");
+        playAgain.setOnAction(event -> {
+        main(null);
+
+        });
+            Button exitGame = new Button("Exit");
+            exitGame.setOnAction(event -> {
+                mainStage.close();
+
+            });
+        gameWon.getChildren().addAll(gameOverText,winnerText,playAgain,exitGame);
+        Scene gameWonScene = new Scene(gameWon);
+        mainStage.setScene(gameWonScene);
+
+        return gameWon;
         }
 
 
 
 
 }
-
-
-	
